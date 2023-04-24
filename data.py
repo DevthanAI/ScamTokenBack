@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 import seaborn as sns
 import PIL
@@ -32,20 +33,20 @@ data = data[data['Volume(24h)'] != '?']
 # convert data to numeric
 data = data.apply(pd.to_numeric, errors='ignore')
 
-# standardize the data using z-score
-data['Market Cap'] = (data['Market Cap'] - data['Market Cap'].mean()) / data['Market Cap'].std()
-data['Volume(24h)'] = (data['Volume(24h)'] - data['Volume(24h)'].mean()) / data['Volume(24h)'].std()
-data['Price'] = (data['Price'] - data['Price'].mean()) / data['Price'].std()
-data['% 1h'] = (data['% 1h'] - data['% 1h'].mean()) / data['% 1h'].std()
-data['% 24h'] = (data['% 24h'] - data['% 24h'].mean()) / data['% 24h'].std()
-data['% 7d'] = (data['% 7d'] - data['% 7d'].mean()) / data['% 7d'].std()
+# standardize the data using standard scaler
+scaler = StandardScaler()
+scaler.fit(data.drop(['Rank', 'Name', 'Platform', 'Circulating Supply', '% 1h', '% 24h', '% 7d'], axis=1))
+scaled_features = scaler.transform(data. drop(['Rank', 'Name', 'Platform', 'Circulating Supply', '% 1h', '% 24h', '% 7d'], axis=1))
+
+# create a new dataframe with the scaled features   
+data = pd.DataFrame(scaled_features, columns=['Market Cap', 'Volume(24h)', 'Price'])
 
 # remove outliers
-data = data[(np.abs(data['Market Cap']) < 3) & (np.abs(data['Volume(24h)']) < 3) & (np.abs(data['Price']) < 3) & (np.abs(data['% 1h']) < 3) & (np.abs(data['% 24h']) < 3) & (np.abs(data['% 7d']) < 3)]
+data = data[(np.abs(data['Market Cap']) < 1) & (np.abs(data['Volume(24h)']) < 1) & (np.abs(data['Price']) < 1)]
 
 # cluster the data using k-means clustering
 kmeans = KMeans(n_clusters=2)
-kmeans.fit(data.drop(['Rank', 'Name', 'Platform', 'Circulating Supply', '% 1h', '% 24h', '% 7d'], axis=1))
+kmeans.fit(data)
 
 # create a new column for the cluster
 data['Cluster'] = kmeans.labels_ 
