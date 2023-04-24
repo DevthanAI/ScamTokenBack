@@ -115,7 +115,7 @@ plt.close()
 data.to_csv('csv/crypto-data-clustered.csv', index=False)
 
 # label the clusters
-data['Cluster'] = data['Cluster'].map({0: 'HMLP', 1: 'LMHP(Overpriced)', 2: 'LMLP', 3: 'HMHP'})
+data['Cluster'] = data['Cluster'].map({3: 'Warning'})
 
 # save the data
 data.to_csv('csv/crypto-data-analyzed.csv', index=False)
