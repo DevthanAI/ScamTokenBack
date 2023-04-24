@@ -2,10 +2,11 @@ import pandas as pd
 import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 
 # Read the data
-data = pd.read_csv('data_csv/crypto-data.csv')
+data = pd.read_csv('csv/crypto-data.csv')
 
 # remove \n from Name column
 data['Name'] = data['Name'].str.replace('\n', '')
@@ -47,6 +48,14 @@ data = data[(np.abs(data['% 1h'] - data['% 1h'].mean()) <= (3 * data['% 1h'].std
 data = data[(np.abs(data['% 24h'] - data['% 24h'].mean()) <= (3 * data['% 24h'].std()))]
 data = data[(np.abs(data['% 7d'] - data['% 7d'].mean()) <= (3 * data['% 7d'].std()))]
 
+# apply PCA to reduce the dimensions of the data
+pca = PCA(n_components=2)
+pca.fit(data)
+x_pca = pca.transform(data)
+
+# create a new dataframe with the PCA data
+data = pd.DataFrame(x_pca, columns=['Market Cap', 'Price'])
+
 # use the elbow method to find the optimal number of clusters
 wcss = []
 for i in range(1, 11):
@@ -57,7 +66,7 @@ plt.plot(range(1, 11), wcss)
 plt.title('The Elbow Method')
 plt.xlabel('Number of clusters')
 plt.ylabel('WCSS')
-plt.savefig('k_calc_img/elbow-method.png')
+plt.savefig('img/elbow-method.png')
 plt.show()
 plt.close()
 
@@ -70,19 +79,17 @@ plt.plot(range(2, 11), silhouette_scores)
 plt.title('The Silhouette Method')
 plt.xlabel('Number of clusters')
 plt.ylabel('Silhouette Score')
-plt.savefig('k_calc_img/silhouette-method.png')
+plt.savefig('img/silhouette-method.png')
 plt.show()
 plt.close()
 
-# cluster the data with dbscan
+# cluster the data with k = 4
 kmeans = KMeans(n_clusters=4, init='k-means++', random_state=42)
 kmeans.fit(data)
-
-# create a new column for the cluster
-data['Cluster'] = kmeans.labels_ 
+data['Cluster'] = kmeans.labels_
 
 # save the data
-data.to_csv('data_csv/crypto-data-clustered.csv', index=False)
+data.to_csv('csv/crypto-data-clustered.csv', index=False)
 
 # show the data with the clusters with x = Market Cap and y = Price
 plt.figure(figsize=(10, 6))
@@ -90,51 +97,7 @@ plt.scatter(data['Market Cap'], data['Price'], c=data['Cluster'], cmap='rainbow'
 plt.xlabel('Market Cap')
 plt.ylabel('Price')
 
-# save the plot as jpg with x = Market Cap and y = Price
-plt.savefig('clustered_img/market-cap-price.png')
-plt.show()
-plt.close()
-
-# show the data with the clusters with x = Volume(24h) and y = Price
-plt.figure(figsize=(10, 6))
-plt.scatter(data['Volume(24h)'], data['Price'], c=data['Cluster'], cmap='rainbow')
-plt.xlabel('Volume(24h)')
-plt.ylabel('Price')
-
-# save the plot as jpg with x = Volume(24h) and y = Price
-plt.savefig('clustered_img/volume-price.png')
-plt.show()
-plt.close()
-
-# show the data with the clusters with x = % 1h and y = Price
-plt.figure(figsize=(10, 6))
-plt.scatter(data['% 1h'], data['Price'], c=data['Cluster'], cmap='rainbow')
-plt.xlabel('% 1h')
-plt.ylabel('Price')
-
-# save the plot as jpg with x = % 1h and y = Price
-plt.savefig('clustered_img/percent-1h-price.png')
-plt.show()
-plt.close()
-
-# show the data with the clusters with x = % 24h and y = Price
-plt.figure(figsize=(10, 6))
-plt.scatter(data['% 24h'], data['Price'], c=data['Cluster'], cmap='rainbow')
-plt.xlabel('% 24h')
-plt.ylabel('Price')
-
-# save the plot as jpg with x = % 24h and y = Price
-plt.savefig('clustered_img/percent-24h-price.png')
-plt.show()
-plt.close()
-
-# show the data with the clusters with x = % 7d and y = Price
-plt.figure(figsize=(10, 6))
-plt.scatter(data['% 7d'], data['Price'], c=data['Cluster'], cmap='rainbow')
-plt.xlabel('% 7d')
-plt.ylabel('Price')
-
-# save the plot as jpg with x = % 7d and y = Price
-plt.savefig('clustered_img/percent-7d-price.png')
+# save the image
+plt.savefig('img/crypto-data-clustered.png')
 plt.show()
 plt.close()
