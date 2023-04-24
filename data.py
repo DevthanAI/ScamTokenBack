@@ -59,7 +59,7 @@ data = pd.DataFrame(x_pca, columns=['Market Cap', 'Price'])
 # use the elbow method to find the optimal number of clusters
 wcss = []
 for i in range(1, 11):
-    kmeans = KMeans(n_clusters=i, init='k-means++', random_state=42)
+    kmeans = KMeans(n_clusters=i, n_init=10, init='k-means++', random_state=42)
     kmeans.fit(data)
     wcss.append(kmeans.inertia_)
 plt.plot(range(1, 11), wcss)
@@ -74,7 +74,7 @@ plt.close()
 from sklearn.metrics import silhouette_score
 silhouette_scores = []
 for n_cluster in range(2, 11):
-    silhouette_scores.append(silhouette_score(data, KMeans(n_clusters=n_cluster).fit_predict(data)))
+    silhouette_scores.append(silhouette_score(data, KMeans(n_init = 10, n_clusters=n_cluster).fit_predict(data)))
 plt.plot(range(2, 11), silhouette_scores)
 plt.title('The Silhouette Method')
 plt.xlabel('Number of clusters')
@@ -84,20 +84,38 @@ plt.show()
 plt.close()
 
 # cluster the data with k = 4
-kmeans = KMeans(n_clusters=4, init='k-means++', random_state=42)
+kmeans = KMeans(n_clusters=4, n_init=10, init='k-means++', random_state=42, max_iter=300)
 kmeans.fit(data)
 data['Cluster'] = kmeans.labels_
 
-# save the data
-data.to_csv('csv/crypto-data-clustered.csv', index=False)
+# calculate the mean of each cluster
+print(data.groupby('Cluster').mean())
+
+# calculate the percentage of tokens in each cluster
+print(data['Cluster'].value_counts(normalize=True))
 
 # show the data with the clusters with x = Market Cap and y = Price
 plt.figure(figsize=(10, 6))
 plt.scatter(data['Market Cap'], data['Price'], c=data['Cluster'], cmap='rainbow')
+
+# show the cluster centers
+plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], s=30, c='black', label='Centroids')
+
+# set the details of the plot
 plt.xlabel('Market Cap')
 plt.ylabel('Price')
+plt.title('Crypto Data Clusters')
 
 # save the image
 plt.savefig('img/crypto-data-clustered.png')
 plt.show()
 plt.close()
+
+# save the data
+data.to_csv('csv/crypto-data-clustered.csv', index=False)
+
+# label the clusters
+data['Cluster'] = data['Cluster'].map({0: 'HMLP', 1: 'LMHP(Overpriced)', 2: 'LMLP', 3: 'HMHP'})
+
+# save the data
+data.to_csv('csv/crypto-data-analyzed.csv', index=False)
