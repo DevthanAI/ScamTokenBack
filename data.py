@@ -29,6 +29,12 @@ data['% 7d'] = data['% 7d'].str.replace('%', '')
 # remove row with ? in Volume(24h) column
 data = data[data['Volume(24h)'] != '?']
 
+# remove row with excessively small values in price column
+data = data[data['Price'] != '0.0...05073']
+data = data[data['Price'] != '0.0...07413']
+data = data[data['Price'] != '0.0...04719']
+data = data[data['Price'] != '0.0...07364']
+
 # convert data to numeric
 data = data.apply(pd.to_numeric, errors='ignore')
 
@@ -83,8 +89,8 @@ plt.savefig('img/silhouette-method.png')
 plt.show()
 plt.close()
 
-# cluster the data with k = 4
-kmeans = KMeans(n_clusters=4, n_init=10, init='k-means++', random_state=42, max_iter=300)
+# cluster the data optimally
+kmeans = KMeans(n_clusters=5, n_init=10, init='k-means++', random_state=42, max_iter=300)
 kmeans.fit(data)
 data['Cluster'] = kmeans.labels_
 
@@ -111,11 +117,8 @@ plt.savefig('img/crypto-data-clustered.png')
 plt.show()
 plt.close()
 
-# save the data
+# sort the data by highest market cap
+data = data.sort_values(by=['Market Cap'], ascending=False)
+
+# save the data to a csv file
 data.to_csv('csv/crypto-data-clustered.csv', index=False)
-
-# label the clusters
-data['Cluster'] = data['Cluster'].map({3: 'Warning'})
-
-# save the data
-data.to_csv('csv/crypto-data-analyzed.csv', index=False)
