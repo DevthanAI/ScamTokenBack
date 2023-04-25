@@ -113,7 +113,7 @@ plt.ylabel('Price')
 plt.title('Crypto Data Clusters')
 
 # save the image
-plt.savefig('img/crypto-data-clustered.png')
+plt.savefig('img/k-means.png')
 plt.show()
 plt.close()
 
@@ -121,4 +121,4 @@ plt.close()
 data = data.sort_values(by=['Market Cap'], ascending=False)
 
 # save the data to a csv file
-data.to_csv('csv/crypto-data-clustered.csv', index=False)
+data.to_csv('csv/k-means.csv', index=False)
