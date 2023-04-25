@@ -7,8 +7,8 @@ import hdbscan
 # Read the data
 data = pd.read_csv('csv/crypto-data.csv')
 
-# remove \n from Name column
-data['Name'] = data['Name'].str.replace('\n', '')
+# Remove \r\n in Name column
+data['Name'] = data['Name'].str.replace('\r\n', '')
 
 # remove $ from Market Cap, Volume and Price columns
 data['Market Cap'] = data['Market Cap'].str.replace('$', '')
