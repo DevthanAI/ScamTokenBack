@@ -4,6 +4,7 @@ from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
+from sklearn.metrics import silhouette_score
 
 # Read the data
 data = pd.read_csv('csv/crypto-data.csv')
@@ -77,7 +78,6 @@ plt.show()
 plt.close()
 
 # use the silhouette method to find the optimal number of clusters
-from sklearn.metrics import silhouette_score
 silhouette_scores = []
 for n_cluster in range(2, 11):
     silhouette_scores.append(silhouette_score(data, KMeans(n_init = 10, n_clusters=n_cluster).fit_predict(data)))
