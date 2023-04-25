@@ -5,6 +5,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 from sklearn.metrics import silhouette_score
+import pickle
 
 # Read the data
 data = pd.read_csv('csv/crypto-data.csv')
@@ -126,3 +127,6 @@ data = data.sort_values(by=['Market Cap'], ascending=False)
 
 # save the data to a csv file
 data.to_csv('csv/k-means.csv', index=False)
+
+# save the model to a pickle file
+pickle.dump(kmeans, open('pickle/k-means.pkl', 'wb'))
