@@ -89,8 +89,8 @@ plt.savefig('img/silhouette-method.png')
 plt.show()
 plt.close()
 
-# cluster the data optimally
-kmeans = KMeans(n_clusters=5, n_init=10, init='k-means++', random_state=42, max_iter=300)
+# cluster the data optimally with infinite iterations
+kmeans = KMeans(n_clusters=5, n_init=10, init='k-means++', random_state=42, max_iter=20)
 kmeans.fit(data)
 data['Cluster'] = kmeans.labels_
 
@@ -102,10 +102,14 @@ print(data['Cluster'].value_counts(normalize=True))
 
 # show the data with the clusters with x = Market Cap and y = Price
 plt.figure(figsize=(10, 6))
-plt.scatter(data['Market Cap'], data['Price'], c=data['Cluster'], cmap='rainbow')
+plt.scatter(data['Market Cap'], data['Price'], c=data['Cluster'], cmap='rainbow', label='Clusters', alpha=0.7)
 
 # show the cluster centers
 plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], s=30, c='black', label='Centroids')
+
+# show the text for the cluster centers
+for i, txt in enumerate(kmeans.cluster_centers_):
+    plt.annotate(i, (kmeans.cluster_centers_[i][0], kmeans.cluster_centers_[i][1]), fontsize=20)
 
 # set the details of the plot
 plt.xlabel('Market Cap')
