@@ -8,7 +8,7 @@ from sklearn.metrics import silhouette_score
 import pickle
 
 # Read the data
-data = pd.read_csv('csv/crypto-data.csv')
+data = pd.read_csv('csv/top-crypto.csv')
 
 # Remove \r\n in Name column
 data['Name'] = data['Name'].str.replace('\r\n', '')

@@ -7,7 +7,7 @@ from sklearn.decomposition import PCA
 kmeans = pickle.load(open('pickle/k-means.pkl', 'rb'))
 
 # open the dataset
-data = pd.read_csv('csv/crypto-data-label.csv')
+data = pd.read_csv('csv/ok-label.csv')
 
 # remove $ from Market Cap, Volume and Price columns
 data['Market Cap'] = data['Market Cap'].str.replace('$', '')
@@ -53,5 +53,5 @@ data['Cluster'] = y_kmeans
 print(data['Cluster'].value_counts(normalize=True))
 
 # save the dataset
-data.to_csv('csv/crypto-data-test.csv', index=False)
+data.to_csv('csv/ok-cluster.csv', index=False)
 
