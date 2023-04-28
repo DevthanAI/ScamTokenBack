@@ -118,7 +118,7 @@ plt.ylabel('Price')
 plt.title('Crypto Data Clusters')
 
 # save the image
-plt.savefig('img/k-means.png')
+plt.savefig('img/kmeans.png')
 plt.show()
 plt.close()
 
@@ -126,7 +126,7 @@ plt.close()
 data = data.sort_values(by=['Market Cap'], ascending=False)
 
 # save the data to a csv file
-data.to_csv('csv/k-means.csv', index=False)
+data.to_csv('csv/kmeans.csv', index=False)
 
 # save the model to a pickle file
-pickle.dump(kmeans, open('pickle/k-means.pkl', 'wb'))
+pickle.dump(kmeans, open('pickle/kmeans.pkl', 'wb'))

@@ -4,7 +4,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 
 # open the pickled model
-kmeans = pickle.load(open('pickle/k-means.pkl', 'rb'))
+kmeans = pickle.load(open('pickle/kmeans.pkl', 'rb'))
 
 # open the dataset
 data = pd.read_csv('csv/ok-label.csv')
@@ -53,5 +53,5 @@ data['Cluster'] = y_kmeans
 print(data['Cluster'].value_counts(normalize=True))
 
 # save the dataset
-data.to_csv('csv/ok-cluster.csv', index=False)
+data.to_csv('csv/ok-kmeans.csv', index=False)
 
